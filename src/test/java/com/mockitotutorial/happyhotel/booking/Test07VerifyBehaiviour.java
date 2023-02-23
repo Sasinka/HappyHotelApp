@@ -1,0 +1,56 @@
+package com.mockitotutorial.happyhotel.booking;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito.*;
+import org.mockito.cglib.core.Local;
+
+import static org.mockito.ArgumentMatchers.*;
+
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class Test07VerifyBehaiviour {
+    private  BookingService bookingService;
+    private  PaymentService paymentServiceMock;
+    private  RoomService   roomServiceMock;
+    private  BookingDAO bookingDAOMock;
+    private  MailSender mailSenderMock;
+
+    @BeforeEach
+    void setup() {
+        this.paymentServiceMock = mock(PaymentService.class);
+        this.roomServiceMock = mock(RoomService.class);
+        this.bookingDAOMock = mock(BookingDAO.class);
+        this.mailSenderMock = mock(MailSender.class);
+
+        this.bookingService = new BookingService(paymentServiceMock, roomServiceMock, bookingDAOMock, mailSenderMock);
+    }
+
+    @Test
+    void should_invokePayment_When_Prepaird(){
+        //given
+        BookingRequest bookingRequest = new BookingRequest("1", LocalDate.of(2020, 1, 1),
+                LocalDate.of(2020, 01, 05), 2, true);
+
+        //when
+        bookingService.makeBooking(bookingRequest);
+        //then
+        verify(paymentServiceMock).pay(bookingRequest, 400);
+        verifyNoInteractions(paymentServiceMock);
+
+    }
+
+    @Test
+    void should_NotInvokePayment_When_Prepaird(){
+        //given
+        BookingRequest bookingRequest = new BookingRequest("1", LocalDate.of(2020, 1, 1),
+                LocalDate.of(2020, 01, 05), 2, true);
+                //when
+
+                //then
+
+    }
+}
